@@ -1,0 +1,43 @@
+﻿@inherits IoTSuite.Layouts.MainLayoutComponent
+
+@using Radzen
+@using Radzen.Blazor
+<RadzenDialog />
+<RadzenNotification />
+<RadzenTooltip />
+
+<RadzenHeader>
+  <ChildContent>
+    <div class="row justify-content-start align-items-center">
+      <div class="d-flex align-items-center col-6">
+        <RadzenSidebarToggle Click="@SidebarToggle0Click">
+        </RadzenSidebarToggle>
+        <RadzenLabel Text="IoT Suite">
+        </RadzenLabel>
+      </div>
+      <div class="text-lg-right justify-content-end d-flex align-items-end col-6">
+          <LoginDisplay />
+      </div>
+    </div>
+  </ChildContent>
+</RadzenHeader>
+<RadzenBody @ref="body0">
+  <ChildContent>
+    <RadzenContentContainer Name="main">
+    @Body
+    </RadzenContentContainer>
+  </ChildContent>
+</RadzenBody>
+<RadzenSidebar @ref="sidebar0">
+    <ChildContent>
+        <NavMenu />
+    </ChildContent>
+</RadzenSidebar>
+<RadzenFooter>
+    <ChildContent>
+        <div class="row">
+            <CultureSelector />
+            <RadzenLabel class="col" Style="text-align: right" Text="Pedro Rendeiro, Copyright Ⓒ 2020" />
+        </div>
+    </ChildContent>
+</RadzenFooter>

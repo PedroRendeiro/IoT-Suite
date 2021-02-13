@@ -1,0 +1,64 @@
+﻿@page "/edit-thing/{Id}"
+@layout MainLayout
+@inherits IoTSuite.Client.Pages.Things.EditThingComponent
+
+@using Radzen
+@using Radzen.Blazor
+@using Microsoft.AspNetCore.Authorization
+@using IoTSuite.Shared
+@attribute [Authorize]
+
+<RadzenContent Container="main">
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTemplateForm TItem="IoTSuite.Shared.Thing" Data="@data" Visible="@(data != null)" Submit="FormSubmit">
+                    <ChildContent>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Id" Component="Id" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenNumeric MaxLength="256" style="display: block; width: 100%" @bind-Value="@(data.ThingId)" Name="Id" ReadOnly="true" />
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Owner" Component="Owner" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenNumeric MaxLength="256" style="display: block; width: 100%" @bind-Value="@(data.Owner)" Name="Owner" ReadOnly="true" />
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Type" Component="Type" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenDropDown style="display: block; width: 100%" @bind-Value="@(data.Type)" Name="Type" Multiple="false" Data="@(Enum.GetValues<ThingType>().ToList())" />
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Features" Component="Features" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenDropDown style="display: block; width: 100%" Name="Features" Multiple="true" Data="@(Enum.GetValues<FeatureType>().ToList())" TValue="FeatureType" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col offset-sm-3">
+                                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" ButtonStyle="ButtonStyle.Primary" />
+                                <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Click="@CloseButtonClick" />
+                            </div>
+                        </div>
+                    </ChildContent>
+                </RadzenTemplateForm>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenContent>

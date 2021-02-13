@@ -1,0 +1,25 @@
+﻿@inherits IoTSuite.Layouts.MainLayoutComponent
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+<RadzenProfileMenu Click="@Profilemenu0Click">
+    <ChildContent>
+        <AuthorizeView>
+            <Authorized>
+                <RadzenProfileMenuItem Path="profile" Icon="settings" Text="Profile" />
+                <RadzenProfileMenuItem Text="Logout" Value="Logout" Icon="power_settings_new" />
+            </Authorized>
+            <NotAuthorized>
+                <RadzenProfileMenuItem Text="Login" Value="Login" Icon="power_settings_new" />
+            </NotAuthorized>
+        </AuthorizeView>
+    </ChildContent>
+    <Template>
+        <AuthorizeView>
+            <Authorized>
+                <RadzenLabel Text="@context.User.Identity.Name" />
+            </Authorized>
+        </AuthorizeView>
+    </Template>
+</RadzenProfileMenu>

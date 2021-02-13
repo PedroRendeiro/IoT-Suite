@@ -1,0 +1,62 @@
+﻿@page "/profile"
+@layout MainLayout
+@inherits IoTSuite.Pages.ProfileComponent
+
+@using Radzen
+@using Radzen.Blazor
+@using Microsoft.Graph
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Profile> L
+
+<RadzenContent Container="main">
+    <ChildContent>
+        <RadzenIcon Icon="fingerprint" />
+        <RadzenHeading Size="H1" style="display: inline-block" Text="Profile" />
+        <RadzenTabs>
+            <Tabs>
+                <RadzenTabsItem Selected="true" Text="Personal">
+                    <ChildContent>
+                        <RadzenHeading Size="H3" Visible="@(user == null)" Text="Loading..." />
+                        <RadzenTemplateForm Data="@user" TItem="User" Visible="@(user != null)" Submit="@TemplateForm0Submit">
+                            <ChildContent>
+                                <div style="margin-bottom: 1rem" class="row">
+                                    <div class="col-md-3">
+                                        <RadzenLabel Component="textBox1" style="width: 100%" Text="First Name">
+                                        </RadzenLabel>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <RadzenTextBox style="display: block; width: 100%" @bind-Value="@(user.GivenName)" Name="TextBox1">
+                                        </RadzenTextBox>
+                                        <RadzenRequiredValidator Component="TextBox1" style="position: absolute" Text="FirstName is required">
+                                        </RadzenRequiredValidator>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 1rem" class="row">
+                                    <div class="col-md-3">
+                                        <RadzenLabel Component="textbox0" style="width: 100%" Text="Last Name">
+                                        </RadzenLabel>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <RadzenTextBox style="display: block; width: 100%" @bind-Value="@(user.Surname)" Name="Textbox0">
+                                        </RadzenTextBox>
+                                        <RadzenRequiredValidator Component="Textbox0" style="position: absolute" Text="Last Name is required">
+                                        </RadzenRequiredValidator>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 1rem" class="row">
+                                    <div class="offset-sm-3 col-md-9">
+                                        <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save">
+                                        </RadzenButton>
+                                    </div>
+                                </div>
+                            </ChildContent>
+                        </RadzenTemplateForm>
+                    </ChildContent>
+                </RadzenTabsItem>
+                <RadzenTabsItem Selected="false" Text="Password" @onclick="ChangePassword" />
+            </Tabs>
+        </RadzenTabs>
+    </ChildContent>
+</RadzenContent>

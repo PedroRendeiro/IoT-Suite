@@ -1,0 +1,9 @@
+﻿@page "/"
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Index> Loc
+
+<RadzenContent Container="main">
+    <ChildContent>
+        <RadzenIcon Icon="assessment" />
+        <RadzenHeading Size="H1" style="display: inline-block" Text="@Loc["Hello, world!"]" />
+    </ChildContent>
+</RadzenContent>

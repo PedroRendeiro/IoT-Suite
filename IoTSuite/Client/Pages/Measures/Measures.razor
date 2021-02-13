@@ -1,0 +1,110 @@
+﻿@page "/measures"
+@layout MainLayout
+@inherits IoTSuite.Client.Pages.Measures.MeasuresComponent
+
+@using IoTSuite.Shared
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<RadzenContent Container="main">
+    <div class="row">
+        <div class="col-md">
+            <RadzenIcon Icon="show_chart" />
+            <RadzenHeading Size="H1" style="display: inline-block" Text="Measures" />
+        </div>
+        <RadzenDropDown @ref="thingsDropDown" class="col-md" AllowClear="false" TValue="Guid" Data="@things"
+                        TextProperty="ThingId" ValueProperty="ThingId" Placeholder="@thingsPlaceholder"
+                        Change="@ChangeThingsDropDown">
+            <Template>
+                ThingId: @((context as Thing).ThingId)
+            </Template>
+        </RadzenDropDown>
+    </div>
+    @if (thingsDropDown != null)
+    {
+        if (thingsDropDown.HasValue & data == null)
+        {
+            <RadzenHeading Size="H3" style="display: inline-block" Text="Loading..." />
+        }
+    }
+    <RadzenTabs Visible="@(data != null)">
+        <Tabs>
+            <RadzenTabsItem Selected="false" Text="Chart" Visible="@(chartData != null)">
+                <RadzenTemplateForm Data="0" TItem="int" Submit="@(async () => await UpdateChartData())" InvalidSubmit="@OnInvalidSubmit">
+                    <RadzenFieldset Text="Results Interval">
+                        <div class="row">
+                            <div class="col-md">
+                                <RadzenLabel Text="From" />
+                                <RadzenDatePicker Name="datePickerFrom" ShowTime="true" @bind-Value="dateTimeFrom" />
+                                <RadzenCompareValidator Component="datePickerFrom" Value="DateTime.Now" Operator="CompareOperator.LessThanEqual" />
+                            </div>
+                            <div class="col-md">
+                                <RadzenLabel Text="To" />
+                                <RadzenDatePicker Name="datePickerTo" ShowTime="true" @bind-Value="dateTimeTo" />
+                                <RadzenCompareValidator Component="datePickerTo" Value="DateTime.Now" Operator="CompareOperator.LessThanEqual" />
+                            </div>
+                            <div class="col-md-2">
+                                <RadzenButton Text="Update" ButtonType="ButtonType.Submit" />
+                                <RadzenCompareValidator Component="datePickerFrom" Value="dateTimeTo" Operator="CompareOperator.LessThan" />
+                            </div>
+                        </div>
+                    </RadzenFieldset>
+                </RadzenTemplateForm>                
+                <RadzenChart>
+                    @foreach (var type in Enum.GetValues<MeasureType>())
+                    {
+                        var series = chartData.Where(value => value.Type.Equals(type));
+                        if (series.Any())
+                        {
+                            <RadzenLineSeries Data="@series" CategoryProperty="Date" Title="@type.ToString()" ValueProperty="Value" LineType="LineType.Solid">
+                                <TooltipTemplate Context="data">
+                                    <div>
+                                        @data.Date <br />
+                                        @data.Value <strong>@data.Unit</strong>
+                                    </div>
+                                </TooltipTemplate>
+                            </RadzenLineSeries>
+                        }
+                    }
+
+                    <RadzenValueAxis>
+                        <RadzenGridLines Visible="true" />
+                    </RadzenValueAxis>
+
+                    <RadzenCategoryAxis FormatString="{0:T}">
+                    </RadzenCategoryAxis>
+
+                    <RadzenLegend Position="LegendPosition.Bottom" />
+                </RadzenChart>
+            </RadzenTabsItem>
+            
+            <RadzenTabsItem Selected="true" Text="Data">
+            <RadzenDropDown TValue="int" Data="@RecordsPerPage" @bind-Value="@PageSize" Change="@ChangeRecordsDropDown"
+                            Visible="@(dataGrid != null)" class="col-md-2" />
+            <RadzenGrid @ref="dataGrid" PageSize="@PageSize" Count="@dataCount" Data="@data" LoadData="@UpdateGridData" TItem="Measure"
+                        AllowSorting="true" EditMode="DataGridEditMode.Single" Responsive="true" RowSelect="@RowSelect" AllowPaging="true">
+                <Columns>
+                    @foreach (var property in typeof(Measure).GetProperties())
+                    {
+                        if (property.Name.Contains("Thing") | property.Name.Contains("Id"))
+                        {
+                            continue;
+                        }
+
+                        if (property.GetValue(data.First()) != null)
+                        {
+                            <RadzenGridColumn TItem="Measure" Property="@property.Name" Title="@property.Name" />
+                        }
+                    }
+                    <RadzenGridColumn TItem="Measure" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+                        <Template Context="data">
+                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@((args) =>DeleteButtonClick(args, data))" @onclick:stopPropagation="true">
+                            </RadzenButton>
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenContent>

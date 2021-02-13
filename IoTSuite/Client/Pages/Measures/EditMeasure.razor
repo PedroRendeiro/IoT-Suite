@@ -1,0 +1,63 @@
+﻿@page "/edit-measure/{Id}"
+@layout MainLayout
+@inherits IoTSuite.Client.Pages.Measures.EditMeasureComponent
+
+@using Radzen
+@using Radzen.Blazor
+@using Microsoft.AspNetCore.Authorization
+@using IoTSuite.Shared
+@attribute [Authorize]
+
+<RadzenContent Container="main">
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTemplateForm TItem="IoTSuite.Shared.Measure" Data="@data" Visible="@(data != null)" Submit="FormSubmit">
+                    <ChildContent>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Id" Component="Id" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenNumeric MaxLength="256" style="display: block; width: 100%" @bind-Value="@(data.Id)" Name="Id" ReadOnly="true" />
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Date" Component="Date" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenDatePicker style="display: block; width: 100%" @bind-Value="@(data.Date)" Name="Date" ReadOnly="true" />
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="V_L1" Component="V_L1" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenTextBox MaxLength="256" style="display: block; width: 100%" Value="@(data.ThingId.ToString())" Name="ThingId" ReadOnly="true" />
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="V_L2" Component="V_L2" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenNumeric MaxLength="256" style="display: block; width: 100%" @bind-Value="@(data.Value)" Name="Value" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col offset-sm-3">
+                                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" ButtonStyle="ButtonStyle.Primary" />
+                                <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Click="@CloseButtonClick" />
+                            </div>
+                        </div>
+                    </ChildContent>
+                </RadzenTemplateForm>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenContent>

@@ -1,0 +1,63 @@
+﻿@page "/edit-powermeter/{Id}"
+@layout MainLayout
+@inherits IoTSuite.Client.Pages.PowerMeter.EditPowerMeterComponent
+
+@using Radzen
+@using Radzen.Blazor
+@using Microsoft.AspNetCore.Authorization
+@using IoTSuite.Shared
+@attribute [Authorize]
+
+<RadzenContent Container="main">
+    <ChildContent>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTemplateForm TItem="IoTSuite.Shared.PowerMeterInstantaneous" Data="@powerMeterInstantaneous" Visible="@(powerMeterInstantaneous != null)" Submit="FormSubmit">
+                    <ChildContent>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Id" Component="Id" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenNumeric MaxLength="256" style="display: block; width: 100%" @bind-Value="@(powerMeterInstantaneous.Id)" Name="Id" ReadOnly="true" />
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="Date" Component="Date" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenDatePicker style="display: block; width: 100%" @bind-Value="@(powerMeterInstantaneous.Date)" Name="Date" ReadOnly="true" />
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="V_L1" Component="V_L1" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenNumeric MaxLength="256" style="display: block; width: 100%" @bind-Value="powerMeterInstantaneous.V_L1" Name="V_L1" />
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem" class="row">
+                            <div class="col-md-3">
+                                <RadzenLabel Text="V_L2" Component="V_L2" style="width: 100%" />
+                            </div>
+                            <div class="col-md-9">
+                                <RadzenNumeric MaxLength="256" style="display: block; width: 100%" @bind-Value="powerMeterInstantaneous.V_L2" Name="V_L2" />
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col offset-sm-3">
+                                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Save" ButtonStyle="ButtonStyle.Primary" />
+                                <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Cancel" Click="@CloseButtonClick" />
+                            </div>
+                        </div>
+                    </ChildContent>
+                </RadzenTemplateForm>
+            </div>
+        </div>
+    </ChildContent>
+</RadzenContent>

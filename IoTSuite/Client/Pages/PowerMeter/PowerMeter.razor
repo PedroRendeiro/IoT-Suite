@@ -1,0 +1,103 @@
+﻿@page "/powermeter"
+@layout MainLayout
+@inherits IoTSuite.Client.Pages.PowerMeter.PowerMeterComponent
+
+@using IoTSuite.Shared
+@using IoTSuite.Shared.Extensions
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<RadzenContent Container="main">
+    <div class="row">
+        <div class="col-md">
+            <RadzenIcon Icon="show_chart" />
+            <RadzenHeading Size="H1" style="display: inline-block" Text="Power Meter" />
+        </div>
+        <RadzenDropDown @ref="thingsDropDown" class="col-md" AllowClear="false" TValue="Guid" Data="@things"
+                        TextProperty="ThingId" ValueProperty="ThingId" Placeholder="@thingsPlaceholder"
+                        Change="@ChangeThingsDropDown">
+            <Template>
+                ThingId: @((context as Thing).ThingId)
+            </Template>
+        </RadzenDropDown>
+    </div>
+    @if (thingsDropDown != null)
+    {
+        if (thingsDropDown.HasValue & data == null)
+        {
+            <RadzenHeading Size="H3" style="display: inline-block" Text="Loading..." />
+        }
+    }
+    <RadzenTabs Visible="@(data != null)">
+        <Tabs>
+            @if (chartData != null)
+            {
+                <RadzenTabsItem Selected="false" Text="Chart">
+                    <RadzenChart>
+                        @foreach (var property in typeof(PowerMeterInstantaneous).GetProperties())
+                        {
+                            if (property.Name.Contains("Thing") | property.Name.Contains("Date") | property.Name.Contains("Id"))
+                            {
+                                continue;
+                            }
+                            if (property.GetValue(chartData.First()) != null)
+                            {
+                                <RadzenLineSeries Data="@chartData" CategoryProperty="Date" Title="@property.Name" ValueProperty="@property.Name" LineType="LineType.Solid">
+                                    <TooltipTemplate Context="data">
+                                        <div>
+                                            @data.Date <br />
+                                            @if (typeof(PowerMeterInstantaneous).GetUnits().TryGetValue(property.Name, out string unit))
+                                            {
+                                                @property.GetValue(data) <strong>@unit</strong>
+                                            }
+                                            else
+                                            {
+                                                @property.GetValue(data)
+                                            }
+                                        </div>
+                                    </TooltipTemplate>
+                                </RadzenLineSeries>
+                            }
+                        }
+
+                        <RadzenValueAxis>
+                            <RadzenGridLines Visible="true" />
+                        </RadzenValueAxis>
+
+                        <RadzenCategoryAxis FormatString="{0:T}">
+                        </RadzenCategoryAxis>
+
+                        <RadzenLegend Position="LegendPosition.Bottom" />
+                    </RadzenChart>
+                </RadzenTabsItem>
+            }
+            <RadzenTabsItem Selected="true" Text="Data">
+                <RadzenDropDown TValue="int" Data="@RecordsPerPage" @bind-Value="@PageSize" Change="@ChangeRecordsDropDown"
+                                Visible="@(dataGrid != null)" class="col-md-2" />
+                <RadzenGrid @ref="dataGrid" PageSize="@PageSize" Count="@dataCount" Data="@data" LoadData="@LoadData" TItem="PowerMeterInstantaneous"
+                            AllowSorting="true" EditMode="DataGridEditMode.Single" Responsive="true" RowSelect="@RowSelect" AllowPaging="true">
+                    <Columns>
+                        @foreach (var property in typeof(PowerMeterInstantaneous).GetProperties())
+                        {
+                            if (property.Name.Contains("Thing") | property.Name.Contains("Id"))
+                            {
+                                continue;
+                            }
+
+                            if (property.GetValue(data.First()) != null)
+                            {
+                                <RadzenGridColumn TItem="PowerMeterInstantaneous" Property="@property.Name" Title="@property.Name" />
+                            }
+                        }
+                        <RadzenGridColumn TItem="PowerMeterInstantaneous" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+                            <Template Context="data">
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@((args) =>DeleteButtonClick(args, data))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            </Template>
+                        </RadzenGridColumn>
+                    </Columns>
+                </RadzenGrid>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenContent>

@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+	<BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BlazorGoogleMaps" Version="1.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.3" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.3" />
+    <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="5.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="5.0.3" />
+    <PackageReference Include="Microsoft.Graph.Auth" Version="1.0.0-preview.6" />
+    <PackageReference Include="Microsoft.Graph.Beta" Version="0.37.0-preview" />
+    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="Radzen.Blazor" Version="3.0.9" />
+    <PackageReference Include="System.Net.Http.Json" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\IoTSuite.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+  </ItemGroup>
+
+</Project>

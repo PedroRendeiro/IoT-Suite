@@ -1,0 +1,57 @@
+﻿@page "/things"
+@layout MainLayout
+@inherits IoTSuite.Client.Pages.Things.ThingsComponent
+
+@using IoTSuite.Shared
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<RadzenContent Container="main">
+    <div class="row">
+        <div class="col-md">
+            <RadzenIcon Icon="show_chart" />
+            <RadzenHeading Size="H1" style="display: inline-block" Text="Things" />
+        </div>
+    </div>
+    @if (data == null)
+    {
+        <RadzenHeading Size="H3" style="display: inline-block" Text="Loading..." />
+    }
+    <RadzenTabs Visible="@(data != null)">
+        <Tabs>
+            <RadzenTabsItem Selected="true" Text="Data">
+                <RadzenDropDown TValue="int" Data="@RecordsPerPage" @bind-Value="@PageSize" Change="@ChangeRecordsDropDown"
+                                Visible="@(dataGrid != null)" class="col-md-2" />
+                <RadzenGrid @ref="dataGrid" PageSize="@PageSize" Count="@dataCount" Data="@data" LoadData="@LoadData" TItem="Thing"
+                            AllowSorting="true" EditMode="DataGridEditMode.Single" Responsive="true" RowSelect="@RowSelect" AllowPaging="true">
+                    <Columns>
+                        @foreach (var property in typeof(Thing).GetProperties())
+                        {
+                            if (property.Name.Contains("Users"))
+                            {
+                                continue;
+                            }
+
+                            if (property.GetValue(data.First()) != null)
+                            {
+                                <RadzenGridColumn TItem="Thing" Property="@property.Name" Title="@property.Name" />
+                            }
+                        }
+                        <RadzenGridColumn TItem="Thing" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+                            <Template Context="data">
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@((args) =>DeleteButtonClick(args, data))" @onclick:stopPropagation="true" />
+                            </Template>
+                        </RadzenGridColumn>
+                        <RadzenGridColumn TItem="Thing" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+                            <Template Context="data">
+                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="play_arrow" Size="ButtonSize.Small" Click="@((args) =>ThingButtonClick(ThingActions.Start, data))" @onclick:stopPropagation="true" />
+                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="pause" Size="ButtonSize.Small" Click="@((args) =>ThingButtonClick(ThingActions.Stop, data))" @onclick:stopPropagation="true" />
+                                <RadzenButton ButtonStyle="ButtonStyle.Secondary" Icon="replay" Size="ButtonSize.Small" Click="@((args) =>ThingButtonClick(ThingActions.Restart, data))" @onclick:stopPropagation="true" />
+                            </Template>
+                        </RadzenGridColumn>
+                    </Columns>
+                </RadzenGrid>
+            </RadzenTabsItem>
+        </Tabs>
+    </RadzenTabs>
+</RadzenContent>
